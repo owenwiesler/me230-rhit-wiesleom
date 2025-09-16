@@ -1,9 +1,12 @@
-#include <Stepper.h>
+#include <Servo.h>
 
-const int stepsPerRevolution = 2048;  // 32 steps * 64:1 gearhead
-Stepper myStepper(stepsPerRevolution, 8, 10, 9, 11);
+int pos = 0;
+int degrees;
+Servo myservo;
+
+
 void setup() {
-  myStepper.setSpeed(5); 
+  myservo.attach(9);
   pinMode(2, INPUT_PULLUP);
   pinMode(3, INPUT_PULLUP);
   pinMode(A0, INPUT);
@@ -15,9 +18,18 @@ void setup() {
   pinMode(11, OUTPUT);
 }
 
-
 void loop() {
-
+  if (!digitalRead(2)) {
+    myservo.write(0);
+  }
+  else if (!digitalRead(3)) {
+    myservo.write(180);
+  }
+  else {
+    degrees = map(analogRead(A0), 0, 1023, 0, 180);
+    myservo.write(degrees);
+  }
+      
   digitalWrite(4, !digitalRead(2));
   digitalWrite(12, !digitalRead(2));
   
@@ -26,17 +38,5 @@ void loop() {
   
   analogWrite(6, analogRead(A0)/4);
   analogWrite(11, analogRead(A0)/4);
-
-  // step one revolution  in one direction:
-  if (!digitalRead(2)) {
-    myStepper.step(stepsPerRevolution/4);
-    delay(100);
-  }
-
-  // step one revolution in the other direction:
-  if (!digitalRead(3)) {
-    myStepper.step(-stepsPerRevolution/4);
-    delay(100);
-  }
-
+  
 }
