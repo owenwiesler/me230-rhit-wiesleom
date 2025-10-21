@@ -1,0 +1,23 @@
+#define REG_DDR_PUSHBUTTON DDRB
+#define REG_PORT_PUSHBUTTON PORTB
+#define REG_PIN_PUSHBUTTON PINB
+#define BIT_PUSHBUTTON 0
+
+#define REG_DDR_RELAY DDRB
+#define REG_PORT_RELAY PORTB
+#define BIT_RELAY 1
+
+
+void setup() {
+  REG_DDR_RELAY |= _BV(BIT_RELAY);
+  REG_PORT_PUSHBUTTON |= _BV(BIT_PUSHBUTTON);
+}
+
+void loop(){
+  while (bit_is_clear(REG_PIN_PUSHBUTTON, BIT_PUSHBUTTON) ) {
+    REG_PORT_RELAY |= _BV(BIT_RELAY);
+  }
+  REG_PORT_RELAY &= ~_BV(BIT_RELAY);
+  
+  delay(10);
+}
